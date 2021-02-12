@@ -13,19 +13,39 @@ vcpkg_from_github(
         fix_build-location.patch
 )
 
-vcpkg_find_acquire_program(PYTHON2)
-get_filename_component(PYTHON2_DIR "${PYTHON2}" DIRECTORY)
-vcpkg_add_to_path("${PYTHON2_DIR}")
+vcpkg_find_acquire_program(PYTHON3)
+get_filename_component(PYTHON3_DIR "${PYTHON3}" DIRECTORY)
+vcpkg_add_to_path("${PYTHON3_DIR}")
 
 IF (VCPKG_TARGET_IS_WINDOWS)
 ELSE()
 file(REMOVE ${SOURCE_PATH}/cmake/modules/FindTBB.cmake)
 ENDIF()
 
+vcpkg_check_features(
+    OUT_FEATURE_OPTIONS FEATURE_OPTIONS
+    FEATURES
+        python PXR_ENABLE_PYTHON_SUPPORT
+        python PXR_USE_PYTHON_3
+        tools PXR_BUILD_USD_TOOLS
+)
+
+# Handle python for debug builds
+if(python IN_LIST ALL_FEATURES)
+  if(VCPKG_CXX_FLAGS_DEBUG MATCHES "BOOST_DEBUG_PYTHON")
+    # using debug python, make sure boost search for it
+    list(APPEND FEATURE_OPTIONS "-DBoost_USE_DEBUG_PYTHON=ON")
+  else()
+    # not using it, make sure find python does not find it
+    list(APPEND FEATURE_OPTIONS "-DPYTHON_DEBUG_LIBRARY=PYTHON_DEBUG_LIBRARY-NOTFOUND")
+  endif()
+endif()
+
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
     PREFER_NINJA
     OPTIONS
+        ${FEATURE_OPTIONS}
         -DPXR_BUILD_ALEMBIC_PLUGIN:BOOL=OFF
         -DPXR_BUILD_EMBREE_PLUGIN:BOOL=OFF
         -DPXR_BUILD_IMAGING:BOOL=OFF
@@ -33,10 +53,8 @@ vcpkg_configure_cmake(
         -DPXR_BUILD_MONOLITHIC:BOOL=OFF
         -DPXR_BUILD_TESTS:BOOL=OFF
         -DPXR_BUILD_USD_IMAGING:BOOL=OFF
-        -DPXR_ENABLE_PYTHON_SUPPORT:BOOL=OFF
         -DPXR_BUILD_EXAMPLES:BOOL=OFF
         -DPXR_BUILD_TUTORIALS:BOOL=OFF
-        -DPXR_BUILD_USD_TOOLS:BOOL=OFF
 )
 
 vcpkg_install_cmake()
