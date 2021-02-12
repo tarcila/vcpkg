@@ -1,0 +1,29 @@
+From 13e78740373084ed182d6c997155804bd704649f Mon Sep 17 00:00:00 2001
+From: Thomas Arcila <thomas.arcila@gmail.com>
+Date: Mon, 15 Feb 2021 10:04:02 +0100
+Subject: [PATCH] cmake: Find HDF5 package detection
+
+Make sure to only search for C api and remove duplicated REQUIRED keyword
+---
+ cmake/defaults/Packages.cmake | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/cmake/defaults/Packages.cmake b/cmake/defaults/Packages.cmake
+index 0cb83e541..7d1359573 100644
+--- a/cmake/defaults/Packages.cmake
++++ b/cmake/defaults/Packages.cmake
+@@ -285,9 +285,9 @@ if (PXR_BUILD_ALEMBIC_PLUGIN)
+     find_package(Alembic REQUIRED)
+     find_package(OpenEXR REQUIRED)
+     if (PXR_ENABLE_HDF5_SUPPORT)
+-        find_package(HDF5 REQUIRED
++        find_package(HDF5
+             COMPONENTS
+-                HL
++                C HL
+             REQUIRED
+         )
+     endif()
+-- 
+2.30.1.windows.1
+

@@ -12,3 +12,52 @@ Build-Depends: python3, boost-python
 Feature: tools
 Description: Build usd tools
 Build-Depends: usd[python]
+
+
+
+Feature: alembic
+Description: Build alembic plugin for USD
+Build-Depends: alembic
+
+Feature: draco
+Description: Build draco plugin for USD
+Build-Depends: draco
+
+Feature: embree
+Description: Build embree plugin for USD
+Build-Depends: embree3
+
+Feature: opencolorio
+Description: Build opencolorio plugin for USD
+Build-Depends: opencolorio
+
+Feature: openimageio
+Description: Build openimageio plugin for USD
+Build-Depends: openimageio
+
+Feature: openvdb
+Description: Build openvbd plugin for USD
+Build-Depends: openvdb
+
+
+
+Feature: imaging
+Description: Build imaging support for USD
+
+Feature: usdimaging
+Description: Build usd imaging support for USD
+Build-Depends: opensubdiv, ptex
+
+Feature: usdview
+Description: Build usdview
+Build-Depends: usd[usdimaging]
+
+
+
+Feature: plugins
+Description: Build all USD plugins
+Build-Depends: usd[alembic, draco, embree, materialx, opencolorio, openimageio, openvdb]
+
+Feature: full
+Description: Enable all usd features
+Build-Depends: usd[python, plugins, tools, usdview]

@@ -11,11 +11,13 @@ vcpkg_from_github(
     HEAD_REF master
     PATCHES
         fix_build-location.patch
+        0001-cmake-Find-HDF5-package-detection.patch
 )
 
 vcpkg_find_acquire_program(PYTHON3)
 get_filename_component(PYTHON3_DIR "${PYTHON3}" DIRECTORY)
 vcpkg_add_to_path("${PYTHON3_DIR}")
+vcpkg_add_to_path("${PYTHON3_DIR}/Scripts")
 
 IF (VCPKG_TARGET_IS_WINDOWS)
 ELSE()
@@ -25,9 +27,21 @@ ENDIF()
 vcpkg_check_features(
     OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     FEATURES
+        alembic PXR_BUILD_ALEMBIC_PLUGIN
+        draco PXR_BUILD_DRACO_PLUGIN
+        embree PXR_BUILD_EMBREE_PLUGIN
+        imaging PXR_BUILD_IMAGING
+        materialx PXR_BUILD_MATERIALX_PLUGIN
+        opencolorio PXR_BUILD_OPENCOLORIO_PLUGIN
+        openimageio PXR_BUILD_OPENIMAGEIO_PLUGIN
+        openvdb PXR_ENABLE_OPENVDB_SUPPORT
         python PXR_ENABLE_PYTHON_SUPPORT
         python PXR_USE_PYTHON_3
         tools PXR_BUILD_USD_TOOLS
+        usdimaging PXR_BUILD_IMAGING
+        usdimaging PXR_BUILD_USD_IMAGING
+        usdimaging PXR_ENABLE_GL_SUPPORT
+        usdview PXR_BUILD_USDVIEW
 )
 
 # Handle python for debug builds
@@ -39,6 +53,30 @@ if(python IN_LIST ALL_FEATURES)
     # not using it, make sure find python does not find it
     list(APPEND FEATURE_OPTIONS "-DPYTHON_DEBUG_LIBRARY=PYTHON_DEBUG_LIBRARY-NOTFOUND")
   endif()
+  if(usdview IN_LIST ALL_FEATURES)
+    if(NOT EXISTS "${PYTHON3_DIR}/Scripts/pip${VCPKG_HOST_EXECUTABLE_SUFFIX}")
+        vcpkg_from_github(
+            OUT_SOURCE_PATH PYFILE_PATH
+            REPO pypa/get-pip
+            REF 309a56c5fd94bd1134053a541cb4657a4e47e09d #2019-08-25
+            SHA512 bb4b0745998a3205cd0f0963c04fb45f4614ba3b6fcbe97efe8f8614192f244b7ae62705483a5305943d6c8fedeca53b2e9905aed918d2c6106f8a9680184c7a
+            HEAD_REF master
+        )
+        vcpkg_execute_required_process(
+            COMMAND "${PYTHON3}" "${PYFILE_PATH}/get-pip.py"
+            LOGNAME instal-pip
+        )
+    endif()
+    vcpkg_execute_required_process(
+        COMMAND "${PYTHON3}" -m pip install pyside2 pyopengl jinja2
+        LOGNAME install-pip-dependencies
+    )
+  endif()
+endif()
+
+if(openvdb IN_LIST ALL_FEATURES)
+    list(APPEND VCPKG_C_FLAGS "-D_USE_MATH_DEFINES")
+    list(APPEND VCPKG_CXX_FLAGS "-D_USE_MATH_DEFINES")
 endif()
 
 vcpkg_configure_cmake(
@@ -46,13 +84,9 @@ vcpkg_configure_cmake(
     PREFER_NINJA
     OPTIONS
         ${FEATURE_OPTIONS}
-        -DPXR_BUILD_ALEMBIC_PLUGIN:BOOL=OFF
-        -DPXR_BUILD_EMBREE_PLUGIN:BOOL=OFF
-        -DPXR_BUILD_IMAGING:BOOL=OFF
         -DPXR_BUILD_MAYA_PLUGIN:BOOL=OFF
         -DPXR_BUILD_MONOLITHIC:BOOL=OFF
         -DPXR_BUILD_TESTS:BOOL=OFF
-        -DPXR_BUILD_USD_IMAGING:BOOL=OFF
         -DPXR_BUILD_EXAMPLES:BOOL=OFF
         -DPXR_BUILD_TUTORIALS:BOOL=OFF
 )
@@ -63,6 +97,9 @@ file(
     RENAME
         "${CURRENT_PACKAGES_DIR}/pxrConfig.cmake"
         "${CURRENT_PACKAGES_DIR}/cmake/pxrConfig.cmake")
+file(
+    REMOVE
+        "${CURRENT_PACKAGES_DIR}/debug/pxrConfig.cmake")
 
 vcpkg_fixup_cmake_targets(CONFIG_PATH cmake TARGET_PATH share/pxr)
 
