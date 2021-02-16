@@ -32,6 +32,7 @@ vcpkg_check_features(
         embree PXR_BUILD_EMBREE_PLUGIN
         imaging PXR_BUILD_IMAGING
         materialx PXR_BUILD_MATERIALX_PLUGIN
+        materialx PXR_ENABLE_MATERIALX_IMAGING_SUPPORT
         opencolorio PXR_BUILD_OPENCOLORIO_PLUGIN
         openimageio PXR_BUILD_OPENIMAGEIO_PLUGIN
         openvdb PXR_ENABLE_OPENVDB_SUPPORT

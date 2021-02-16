@@ -1,0 +1,9 @@
+Source: materialx
+Version: 1.37.4
+Homepage: https://github.com/materialx/MaterialX
+Description: MaterialX is an open standard for transfer of rich material and look-development content between applications and renderers.
+Build-Depends: opengl (!uwp&!windows), openimageio
+
+Feature: python
+Description: Python support for materialx
+Build-Depends: pybind11, python3

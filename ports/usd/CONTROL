@@ -27,6 +27,10 @@ Feature: embree
 Description: Build embree plugin for USD
 Build-Depends: embree3
 
+Feature: materialx
+Description: Build materialx plugin for USD
+Build-Depends: materialx
+
 Feature: opencolorio
 Description: Build opencolorio plugin for USD
 Build-Depends: opencolorio
