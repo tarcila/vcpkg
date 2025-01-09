@@ -1,0 +1,12 @@
+diff -Naur 4efa737c25-6ae6de7761.clean/src/devices/remote/CMakeLists.txt 4efa737c25-6ae6de7761/src/devices/remote/CMakeLists.txt
+--- 4efa737c25-6ae6de7761.clean/src/devices/remote/CMakeLists.txt	2025-01-08 18:04:03.000000000 -0500
++++ 4efa737c25-6ae6de7761/src/devices/remote/CMakeLists.txt	2025-01-09 10:49:28.470806153 -0500
+@@ -21,7 +21,7 @@
+ endif()
+ 
+ if (libjpeg-turbo_FOUND)
+-  list(APPEND __remote_extra_libs libjpeg-turbo::turbojpeg)
++  list(APPEND __remote_extra_libs $<IF:$<TARGET_EXISTS:libjpeg-turbo::turbojpeg>,libjpeg-turbo::turbojpeg,libjpeg-turbo::turbojpeg-static>)
+   list(APPEND __remote_definitions HAVE_TURBOJPEG=1)
+ endif()
+ 

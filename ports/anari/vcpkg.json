@@ -1,6 +1,6 @@
 {
   "name": "anari",
-  "version": "0.10.0",
+  "version": "0.12.0",
   "description": "Cross-Platform 3D Rendering Engine API.",
   "homepage": "https://www.khronos.org/anari",
   "license": "Apache-2.0",
@@ -15,5 +15,21 @@
       "name": "vcpkg-cmake-config",
       "host": true
     }
-  ]
+  ],
+  "default-features": [
+    "remote-device"
+  ],
+  "features": {
+    "remote-device": {
+      "description": "Remote rendering device",
+      "dependencies": [
+        "boost-asio",
+        "boost-signals2",
+        "boost-system",
+        "boost-uuid",
+        "libjpeg-turbo",
+        "snappy"
+      ]
+    }
+  }
 }
