@@ -10636,6 +10636,10 @@
       "baseline": "1.2.0",
       "port-version": 0
     },
+    "visrtx": {
+      "baseline": "0.13.0",
+      "port-version": 0
+    },
     "vit-vit-ctpl": {
       "baseline": "0.0.2",
       "port-version": 0

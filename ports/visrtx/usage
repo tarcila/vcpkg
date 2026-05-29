@@ -1,0 +1,18 @@
+visrtx provides CMake integration via ANARI. After loading the ANARI SDK you
+can use VisRTX devices at runtime without any additional CMake wiring:
+
+    find_package(anari REQUIRED)
+    target_link_libraries(main PRIVATE anari::anari)
+
+The VisRTX shared libraries are ANARI back-end plug-ins that are discovered
+automatically when they are on the library search path.
+
+-- Feature notes --
+
+  gl   (default)  OpenGL rendering device — no extra requirements.
+  rtx             OptiX/CUDA RTX device. Requires:
+                    - NVIDIA CUDA Toolkit 12+ (system install)
+                    - NVIDIA OptiX SDK 7.7 / 8.x / 9.0 (system install)
+                  If OptiX is not in a standard location, set:
+                    OPTIX_INSTALL_DIR=<path>  (env variable, read by the port)
+                  or pass -DOptiX_INSTALL_DIR=<path> to your CMake configure.

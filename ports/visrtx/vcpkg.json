@@ -1,0 +1,38 @@
+{
+  "name": "visrtx",
+  "version": "0.13.0",
+  "description": "NVIDIA VisRTX — ANARI implementation for scientific visualization, with OptiX/CUDA RTX and OpenGL backends.",
+  "homepage": "https://github.com/NVIDIA/VisRTX",
+  "license": "BSD-3-Clause",
+  "supports": "!osx",
+  "dependencies": [
+    "anari",
+    "glm",
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    }
+  ],
+  "features": {
+    "gl": {
+      "description": "Build the OpenGL rendering device"
+    },
+    "rtx": {
+      "description": "Build the OptiX/CUDA RTX rendering device (requires CUDA Toolkit and NVIDIA OptiX SDK on the system)",
+      "supports": "(windows & x64 & !uwp & !xbox) | (linux & x64) | (linux & arm64)",
+      "dependencies": [
+        {
+          "name": "cuda",
+          "platform": "(windows & x64) | (linux & x64) | (linux & arm64)"
+        }
+      ]
+    }
+  },
+  "default-features": [
+    "gl"
+  ]
+}
